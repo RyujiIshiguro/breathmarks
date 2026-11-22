@@ -97,6 +97,7 @@ fonts/                  Literata, Kalam, Shippori Mincho (subset), Klee One (sub
 - Presage SmartSpectra SDK and its Electron quickstart sample.
 - Fonts (SIL Open Font License 1.1, via Fontsource): Literata (The Literata Project Authors), Kalam (Indian Type Foundry), Shippori Mincho (The Shippori Mincho Project Authors) and Klee One (The Klee Project Authors). The Japanese fonts are subset to JIS X 0208 level-1 kanji, kana and symbols (Shippori Mincho) and to the characters of the Japanese margin notes (Klee One); other characters fall back to the system mincho.
 - “The Night Ferry” was written for this project with AI assistance and is released under CC0 (`samples/the-night-ferry.txt`).
+- “The Lost Property Office” was also written for this project with AI assistance and is released under CC0 (`samples/the-lost-property-office.txt`). It is the draft read in the demo video; the reader saw it for the first time on camera.
 - 「イヤホンと電車」 is a short story by the app’s author, included as a sample. It is not covered by the MIT licence. The original is one paragraph; here it is split into six paragraphs at sentence ends (．) only, with the text otherwise unchanged.
 - Built with help from an AI coding assistant (Claude).
 
