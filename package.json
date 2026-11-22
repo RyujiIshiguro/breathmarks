@@ -1,0 +1,26 @@
+{
+  "name": "breathmarks",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A beta-reading desk for fiction: a friend reads your draft silently, the Presage SmartSpectra SDK reads their breathing, pulse and blinks, and they choose which margin marks to share with you.",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "npm run build && electron .",
+    "start:sim": "npm run build && electron . --simulated",
+    "test": "node --test test/*.test.js",
+    "screenshots": "npm run build && node scripts/screenshots.mjs"
+  },
+  "dependencies": {
+    "@smartspectra/node-sdk": "3.5.0"
+  },
+  "devDependencies": {
+    "electron": "43.8.1",
+    "esbuild": "^0.25.0",
+    "playwright": "^1.63.0"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}

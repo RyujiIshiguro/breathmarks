@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; worker-src 'self' blob:; media-src 'self' blob: mediastream:; connect-src 'self';">
+    <title>Breathmarks</title>
+    <link rel="stylesheet" href="./fonts/fonts-ja.css">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-screen="home">
+
+<div id="sim-tag" class="sim-tag" hidden role="status" aria-live="polite">
+    <strong>SIMULATED</strong> signals are generated, not measured
+</div>
+
+<header class="topbar">
+    <button class="brand" id="nav-home" title="Back to the start">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.5 4.5c2.6 0 4 2 4 4.1 0 3.6-3 7.6-7.6 10.9l-.9-1.1c2.6-2.2 4.2-4.4 4.6-6.4-.3.1-.6.1-.9.1-2 0-3.5-1.5-3.5-3.6 0-2.3 1.9-4 4.3-4z" fill="currentColor"/></svg>
+        <span class="brand-name">Breathmarks</span>
+    </button>
+    <span class="crumb" id="crumb"></span>
+    <div class="top-actions">
+        <span id="source-pill" class="pill" hidden></span>
+        <button id="btn-stop-camera" class="link danger" hidden>Stop camera</button>
+        <button id="nav-settings" class="link">Settings</button>
+    </div>
+</header>
+
+<div id="error-banner" class="banner" hidden>
+    <div><strong id="error-title">Error</strong> <span id="error-text"></span></div>
+    <div class="banner-actions">
+        <button id="error-settings" class="link">Open Settings</button>
+        <button id="error-sim" class="link">Use simulated signals</button>
+        <button id="error-close" class="link" aria-label="Dismiss">Dismiss</button>
+    </div>
+</div>
+
+<main>
+    <!-- Home -------------------------------------------------------------- -->
+    <section class="screen" id="screen-home" aria-labelledby="home-title">
+        <div class="home">
+            <div class="home-left">
+                <h1 id="home-title" class="display">Your friends are too kind to tell you chapter&nbsp;3 drags.<br><em>Their breathing isn’t.</em></h1>
+                <p class="lede">Breathmarks is a beta-reading desk for fiction. A friend reads your draft silently on their laptop.
+                    The Presage SmartSpectra SDK reads their breathing, pulse and blinks from the camera, paragraph by paragraph,
+                    against their own calm 30 seconds. They see the marks first, keep what they like, and only then share them with you.</p>
+                <ol class="how">
+                    <li><span>1</span>The writer sends a draft file.</li>
+                    <li><span>2</span>The reader agrees, sits still for 30 seconds, then reads.</li>
+                    <li><span>3</span>The reader reviews the margin marks and decides what to share.</li>
+                </ol>
+            </div>
+            <div class="home-right">
+                <div class="desk-block">
+                    <h2>I’m reading a draft</h2>
+                    <div class="stack">
+                        <label class="btn btn-primary file-btn">Open the draft I was sent<input type="file" id="file-draft" accept=".txt,.md,.markdown,text/plain,text/markdown" hidden></label>
+                        <button class="btn" id="btn-paste">Paste the text</button>
+                        <div class="sample-row">
+                            <span class="muted">or try a sample:</span>
+                            <button class="link" data-sample="ferry" title="A short story written for this demo (CC0)">The Night Ferry</button>
+                            <button class="link" data-sample="earphones" lang="ja" title="A short story by the app’s author">イヤホンと電車（縦書き）</button>
+                        </div>
+                    </div>
+                    <div id="paste-box" class="paste" hidden>
+                        <input id="paste-title" type="text" placeholder="Title (optional)">
+                        <textarea id="paste-text" rows="9" placeholder="Paste the draft here. Blank lines separate paragraphs."></textarea>
+                        <button class="btn btn-primary" id="btn-paste-go">Use this text</button>
+                    </div>
+                </div>
+                <div class="desk-block">
+                    <h2>I wrote the draft</h2>
+                    <label class="btn file-btn">Open breath marks I received<input type="file" id="file-report" accept=".json,application/json" hidden></label>
+                    <p class="fineprint">The reader saves a <code>.breathmarks.json</code> (or a web page) and sends it to you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consent ------------------------------------------------------------ -->
+    <section class="screen" id="screen-consent" aria-labelledby="consent-title">
+        <div class="consent">
+            <p class="muted" id="draft-meta"></p>
+            <h1 id="consent-title" class="title"></h1>
+            <div class="layout-row" id="layout-row">
+                <span class="muted">Layout</span>
+                <div class="seg" role="radiogroup" aria-label="Text layout">
+                    <button data-layout="horizontal" role="radio">Horizontal</button>
+                    <button data-layout="vertical" role="radio" lang="ja">縦書き</button>
+                </div>
+            </div>
+
+            <div class="consent-cols">
+                <div>
+                    <h2>What the camera is used for</h2>
+                    <p>While you read, the SmartSpectra SDK estimates your <b>breathing</b> (rate and chest movement), <b>pulse rate</b> and <b>blinks</b>.
+                        Each paragraph is compared with <b>your own</b> calm 30 seconds before reading. Nothing is compared with other people.</p>
+                </div>
+                <div>
+                    <h2>What stays with you</h2>
+                    <p>No video or images are recorded or saved. Readings stay in this app’s memory. The camera turns off as soon as you finish.
+                        You see every mark first, can remove any of them, or delete everything.</p>
+                </div>
+                <div>
+                    <h2>What the writer gets</h2>
+                    <p>Only if you press <i>Share with the writer</i>: the text with the marks you kept and a short summary.
+                        Never video, raw pulse or breathing data, or timings. These are camera estimates for feedback, not medical data, and they do not read emotions.</p>
+                </div>
+            </div>
+            <details class="details" id="consent-details">
+                <summary>Network and SDK details</summary>
+                <div class="details-body">
+                    <p>The SDK needs the internet to check the Presage API key and meter usage. SDK telemetry is <b>off</b> unless you turn it on in Settings.
+                        Presage documents that when breathing and pulse are both active the SDK may send pulse and breathing <i>numbers</i> (never video) to its insights service; Breathmarks never requests or shows insights.
+                        To avoid this, turn off Pulse rate in Settings. See Presage’s
+                        <a href="https://smartspectra.presagetech.com/docs/telemetry-and-privacy" target="_blank" rel="noopener">Telemetry &amp; Privacy</a> and
+                        <a href="https://api.physiology.presagetech.com/privacypolicy" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+                    <p>Requested signals: breathing rate and chest/abdomen traces, pulse rate, blinking, talking (only to ignore breathing while you speak). Not requested: expressions, face landmarks, HRV.</p>
+                </div>
+            </details>
+            <div id="consent-key-note" class="note" hidden></div>
+            <label class="check">
+                <input type="checkbox" id="consent-check">
+                <span>I agree to use my camera while I read this draft. Only I am in front of the camera.</span>
+            </label>
+            <div class="actions">
+                <button id="btn-live" class="btn btn-primary" disabled>Start with camera</button>
+                <button id="btn-sim" class="btn">Try with simulated signals</button>
+                <button id="btn-back-home" class="link">Choose another draft</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Baseline ----------------------------------------------------------- -->
+    <section class="screen" id="screen-baseline" aria-labelledby="base-title">
+        <div class="baseline">
+            <div>
+                <div class="preview-slot" data-slot="baseline"></div>
+                <div class="preview-controls">
+                    <span class="muted">Preview</span>
+                    <div class="seg" role="radiogroup" aria-label="Camera preview">
+                        <button data-preview="show" role="radio">Show</button>
+                        <button data-preview="blur" role="radio">Blur</button>
+                        <button data-preview="hide" role="radio">Hide</button>
+                    </div>
+                    <span class="fineprint">Only changes what you see. The SDK still reads the camera.</span>
+                </div>
+            </div>
+            <div class="base-panel">
+                <h1 id="base-title" class="title">Sit back for thirty seconds.</h1>
+                <p>Breathe as you normally do. This is your own calm reference: every mark later is compared with it, and with nothing else.
+                    Keep your face and upper chest in view, lit from the front.</p>
+                <div class="countdown"><span id="base-count">30</span><i id="base-bar"></i></div>
+                <dl class="readouts">
+                    <div><dt>Pulse</dt><dd id="ro-pulse">waiting…</dd></div>
+                    <div><dt>Breathing</dt><dd id="ro-breath">waiting…</dd></div>
+                    <div><dt>Blinks</dt><dd id="ro-blink">waiting…</dd></div>
+                </dl>
+                <canvas id="base-trace" class="trace" height="70"></canvas>
+                <div class="actions">
+                    <button id="btn-start-read" class="btn btn-primary" disabled>Start reading</button>
+                    <span class="fineprint" id="base-hint">Available after 30 seconds of good signal.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Read --------------------------------------------------------------- -->
+    <section class="screen" id="screen-read" aria-label="Reading">
+        <article id="reader" class="reader" tabindex="0"></article>
+        <div class="read-status" id="read-status">
+            <div class="mini-preview preview-slot" data-slot="read"></div>
+            <div class="rs-body">
+                <div class="rs-line"><span class="dot" id="rs-dot"></span><span id="rs-text">Signal looks good</span></div>
+                <canvas id="rs-trace" width="180" height="28" aria-hidden="true"></canvas>
+                <div class="rs-line rs-small"><span id="rs-pos">¶ 1 / 1</span><button class="link" id="btn-finish">Finish</button></div>
+            </div>
+        </div>
+        <div class="key-hint" id="key-hint">→ or Space: next paragraph · ←: back · Esc: finish</div>
+    </section>
+
+    <!-- Reader review ------------------------------------------------------- -->
+    <section class="screen" id="screen-review" aria-labelledby="review-title">
+        <div class="sheet">
+            <div class="sheet-head">
+                <div>
+                    <p class="private-note">Only you can see this. Nothing has been shared. The camera is off.</p>
+                    <h1 id="review-title" class="title">Your breath marks</h1>
+                    <p class="muted" id="review-sub"></p>
+                </div>
+                <div class="actions">
+                    <button id="btn-share" class="btn btn-primary">Share with the writer…</button>
+                    <button id="btn-delete" class="link danger">Delete everything</button>
+                </div>
+            </div>
+            <ul class="summary" id="review-summary"></ul>
+            <figure class="strip">
+                <canvas id="strip" height="120"></canvas>
+                <figcaption id="strip-caption">Chest movement across the whole read. Paragraph numbers along the bottom; red = no breath for 4 s or more.</figcaption>
+            </figure>
+            <p class="fineprint" id="review-base"></p>
+            <p class="tip">Remove a mark you’d rather keep to yourself with <b>Keep private</b> next to it. The writer will see “no note shared” there.</p>
+            <div class="notes-toggle" data-notes-row hidden><span class="muted">Margin notes</span><div class="seg" role="radiogroup" aria-label="Margin note language"><button data-notes="en" role="radio">English</button><button data-notes="ja" role="radio" lang="ja">日本語</button></div></div>
+            <div class="manuscript" id="review-ms"></div>
+        </div>
+    </section>
+
+    <!-- Writer's view ------------------------------------------------------ -->
+    <section class="screen" id="screen-writer" aria-labelledby="writer-title">
+        <div class="sheet">
+            <div class="sheet-head">
+                <div>
+                    <p class="muted" id="writer-meta"></p>
+                    <h1 id="writer-title" class="title"></h1>
+                </div>
+                <div class="actions">
+                    <label class="link file-btn">Open another<input type="file" id="file-report-2" accept=".json,application/json" hidden></label>
+                    <button id="btn-writer-home" class="link">Back to start</button>
+                </div>
+            </div>
+            <ul class="summary" id="writer-summary"></ul>
+            <p class="fineprint" id="writer-note"></p>
+            <p class="tip">Click <b>revise</b> beside a paragraph to flag it for your next draft.</p>
+            <div class="notes-toggle" data-notes-row hidden><span class="muted">Margin notes</span><div class="seg" role="radiogroup" aria-label="Margin note language"><button data-notes="en" role="radio">English</button><button data-notes="ja" role="radio" lang="ja">日本語</button></div></div>
+            <div class="manuscript" id="writer-ms"></div>
+        </div>
+    </section>
+</main>
+
+<!-- Share dialog ------------------------------------------------------------>
+<dialog id="share" aria-labelledby="share-title">
+    <form method="dialog" class="dlg">
+        <h2 id="share-title">Share with the writer</h2>
+        <div class="two">
+            <div>
+                <h3>They will get</h3>
+                <ul><li>The text, with the marks you kept</li><li>The short summary</li><li>“no note shared” where you removed marks</li></ul>
+            </div>
+            <div>
+                <h3>They will not get</h3>
+                <ul><li>Video or images (never recorded)</li><li>Raw pulse, breathing or blink data</li><li>When or how long you read</li></ul>
+            </div>
+        </div>
+        <label class="field">Sign as (optional) <input id="share-name" type="text" placeholder="e.g. Aya"></label>
+        <div class="stack">
+            <button type="button" class="btn btn-primary" data-export="html">Save as a web page (.html)</button>
+            <button type="button" class="btn" data-export="json">Save for the Breathmarks app (.json)</button>
+            <button type="button" class="btn" data-export="md">Save as Markdown (.md)</button>
+            <button type="button" class="link" id="btn-copy-summary">Copy the summary as text</button>
+        </div>
+        <p class="fineprint" id="share-status"></p>
+        <div class="dlg-foot">
+            <button type="button" class="link" id="btn-preview-writer">Preview what the writer will see</button>
+            <button class="link" value="close">Close</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Settings ---------------------------------------------------------------->
+<dialog id="settings" aria-labelledby="settings-title">
+    <form method="dialog" class="dlg settings">
+        <header class="dlg-head">
+            <h2 id="settings-title">Settings</h2>
+            <button class="link" value="close" aria-label="Close settings">Close</button>
+        </header>
+        <fieldset>
+            <legend>Presage API key</legend>
+            <p class="fineprint" id="key-status">No key set.</p>
+            <div class="row">
+                <input type="password" id="key-input" placeholder="Paste your API key" autocomplete="off" spellcheck="false">
+                <button type="button" id="key-save" class="btn btn-small">Save key</button>
+                <button type="button" id="key-clear" class="link danger">Remove key</button>
+            </div>
+            <p class="fineprint">Get a key at <a href="https://physiology.presagetech.com/auth/register" target="_blank" rel="noopener">physiology.presagetech.com</a>.
+                It is stored encrypted on this computer, or set <code>SMARTSPECTRA_API_KEY</code> instead. It is never written into project files.</p>
+        </fieldset>
+        <fieldset>
+            <legend>Signals requested from the SDK</legend>
+            <p class="fineprint">Breathing (rate and chest trace) is always requested. Changes apply to the next reading.</p>
+            <label class="check"><input type="checkbox" id="set-pulse"> <span>Pulse rate</span></label>
+            <label class="check"><input type="checkbox" id="set-blink"> <span>Blinks</span></label>
+            <label class="check"><input type="checkbox" id="set-talk"> <span>Speech detection (only used to ignore breathing while you talk)</span></label>
+            <label class="check"><input type="checkbox" id="set-bundles"> <span>Troubleshooting: request the SDK’s full metric bundles, as in Presage’s samples. Use only if starting fails with a configuration error.</span></label>
+        </fieldset>
+        <fieldset>
+            <legend>Privacy and camera</legend>
+            <label class="check"><input type="checkbox" id="set-telemetry"> <span>Allow SmartSpectra SDK telemetry (aggregate session statistics; no video or vital values, per Presage)</span></label>
+            <div class="row"><label class="field">Camera <select id="set-camera"><option value="">Default camera</option></select></label></div>
+        </fieldset>
+        <p class="fineprint" id="about-line"></p>
+    </form>
+</dialog>
+
+<script src="./dist/renderer.js"></script>
+</body>
+</html>

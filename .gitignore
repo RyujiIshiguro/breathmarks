@@ -1,0 +1,32 @@
+# dependencies and build output
+node_modules/
+dist/
+out/
+release/
+
+# secrets — never commit an API key
+.env
+.env.*
+*.key
+api-key.bin
+config.local.json
+
+# shared reports (contain a draft and someone's reading marks)
+*.breathmarks.html
+*.breathmarks.json
+*.breathmarks.md
+
+# test / tooling artefacts
+test-results/
+playwright-report/
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# personal notes for the author (Japanese), not part of the public repo
+_owner/
